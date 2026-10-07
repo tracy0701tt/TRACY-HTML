@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 【修改標題】 -->
+    <title>iPhone 100 Pro - Apple 老闆特製版</title>
+    
+    <style>
+        /* =========================================
+           1. 全域變數 (修改顏色、間距、圓角)
+           ========================================= */
+        :root {
+            /* 基礎色彩 */
+            --bg-black: #000000;
+            --bg-dark-gray: #111111;
+            --bg-light-gray: #f5f5f7;
+            --text-white: #f5f5f7;
+            --text-gray: #86868b;
+            --primary-blue: #2997ff;
+
+            /* 鈦金屬主題色 (可用於背景或按鈕) */
+            --desert-titanium: #bdaea1;
+            --natural-titanium: #8f8e89;
+            --white-titanium: #e3e4e5;
+            --black-titanium: #333333;
+
+            /* 版面配置 */
+            --section-padding: 140px 20px; 
+            --bento-gap: 24px;
+            --bento-radius: 32px; /* Apple 風格大圓角 */
+        }
+
+        /* =========================================
+           2. 基礎設定與動畫
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "SF Pro TC", "SF Pro Display", "PingFang TC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* 順滑進場動畫 */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0; /* 初始隱藏，等待動畫 */
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        /* =========================================
+           3. 導覽列 (毛玻璃效果)
+           ========================================= */
+        .nav-global, .nav-local {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+        }
+
+        .nav-global {
+            position: fixed;
+            top: 0;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.8);
+            font-size: 12px;
+        }
+
+        .nav-global ul {
+            display: flex;
+            list-style: none;
+            gap: 36px;
+        }
+
+        .nav-global a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-global a:hover { color: #fff; }
+
+        .nav-local {
+            position: fixed;
+            top: 48px;
+            height: 54px;
+            background: rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            justify-content: space-between;
+            padding: 0 max(20px, calc(50% - 500px));
+        }
+        .nav-local .brand { font-size: 21px; font-weight: 600; text-decoration: none; color: #fff; }
+        .nav-local .actions { display: flex; align-items: center; gap: 20px; font-size: 12px; }
+        .nav-local .actions a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .nav-local .actions a:hover { opacity: 1; }
+        
+        .btn-buy {
+            background: var(--text-white);
+            color: var(--bg-black) !important;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+            opacity: 1 !important;
+        }
+
+        /* =========================================
+           4. 排版與按鈕元件
+           ========================================= */
+        .section {
+            padding: var(--section-padding);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title-large {
+            font-size: clamp(48px, 8vw, 80px); /* 響應式字體大小 */
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .title-gradient {
+            background: linear-gradient(110deg, #c5a47e, #f9e5c9, #c5a47e, #8c7257);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .subtitle {
+            font-size: clamp(24px, 4vw, 32px);
+            font-weight: 500;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        .cta-links { display: flex; gap: 30px; align-items: center; }
+        .btn-primary {
+            background: var(--primary-blue);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .btn-primary:hover { background: #0071e3; transform: scale(1.02); }
+        
+        .link-arrow {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+        }
+        .link-arrow::after {
+            content: '>';
+            margin-left: 6px;
+            font-size: 15px;
+            transition: transform 0.3s;
+        }
+        .link-arrow:hover::after { transform: translateX(5px); }
+
+        /* =========================================
+           5. 精細純 CSS 手機模型 (iPhone Pro)
+           ========================================= */
+        .hero-mockup {
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .iphone-body {
+            width: 340px;
+            height: 700px;
+            /* 模擬鈦金屬邊框與高光 */
+            background: linear-gradient(135deg, #111 0%, #2a2a2a 50%, #000 100%);
+            border-radius: 56px;
+            padding: 10px; /* 邊框厚度 */
+            box-shadow: 
+                inset 0 0 15px rgba(255,255,255,0.2), /* 內圈金屬光澤 */
+                0 40px 80px rgba(0,0,0,0.8); /* 巨大外陰影 */
+            position: relative;
+        }
+
+        /* 音量鍵與動作按鈕 (左側) */
+        .iphone-body::before {
+            content: '';
+            position: absolute;
+            left: -4px; top: 140px;
+            width: 4px; height: 130px;
+            background: #444;
+            border-radius: 4px 0 0 4px;
+            box-shadow: 0 60px 0 0 #444, 0 130px 0 0 #444; /* 產生多個按鈕 */
+        }
+        /* 電源鍵 (右側) */
+        .iphone-body::after {
+            content: '';
+            position: absolute;
+            right: -4px; top: 200px;
+            width: 4px; height: 80px;
+            background: #444;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .iphone-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 46px;
+            overflow: hidden;
+            position: relative;
+            /* 模擬桌布漸層 */
+            background: radial-gradient(circle at 50% 120%, rgba(197, 164, 126, 0.4) 0%, rgba(0,0,0,1) 60%);
+            border: 2px solid #000;
+        }
+
+        .dynamic-island {
+            width: 120px;
+            height: 36px;
+            background: #000;
+            border-radius: 20px;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: inset 0 0 4px rgba(255,255,255,0.1);
+        }
+
+        /* =========================================
+           6. 顏色選擇區塊
+           ========================================= */
+        .color-picker {
+            display: flex;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        .color-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s, border 0.2s;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .color-swatch:hover { transform: scale(1.1); border-color: rgba(255,255,255,0.5); }
+        .swatch-desert { background: var(--desert-titanium); border-color: #fff;}
+        .swatch-natural { background: var(--natural-titanium); }
+        .swatch-white { background: var(--white-titanium); }
+        .swatch-black { background: var(--black-titanium); }
+
+        /* =========================================
+           7. Bento Box (便當盒網格設計)
+           ========================================= */
+        .bento-section {
+            background-color: var(--bg-black);
+            padding: 60px 20px 120px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--bento-gap);
+            grid-auto-rows: 280px; /* 基礎高度 */
+        }
+
+        .bento-item {
+            background-color: var(--bg-dark-gray);
+            border-radius: var(--bento-radius);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .bento-item:hover {
+            transform: scale(1.02); /* 滑鼠懸停微縮放 */
+        }
+
+        .bento-large { grid-column: span 2; grid-row: span 2; }
+        .bento-wide { grid-column: span 2; grid-row: span 1; }
+        
+        /* 網格內的排版 */
+        .bento-item h3 { font-size: 28px; margin-bottom: 8px; z-index: 2; }
+        .bento-item p { font-size: 17px; color: var(--text-gray); z-index: 2; }
+        
+        /* 網格裝飾圖形 (純 CSS 幾何圖形代替圖片) */
+        .decor-camera {
+            position: absolute;
+            bottom: -20px; right: -20px;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, #333 30%, #111 70%);
+            border-radius: 50px;
+            border: 4px solid #444;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .decor-lens {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #000 40%, #222 80%);
+            border: 6px solid #111;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .decor-chip {
+            position: absolute;
+            bottom: 40px; left: 50%;
+            transform: translateX(-50%);
+            width: 120px; height: 120px;
+            background: linear-gradient(135deg, #444, #111);
+            border: 2px solid #555;
+            border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: bold; color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        /* =========================================
+           8. 響應式設計 (RWD) - 適應手機螢幕
+           ========================================= */
+        @media (max-width: 900px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .bento-large { grid-column: span 2; }
+            .bento-wide { grid-column: span 2; }
+            .nav-global ul { gap: 16px; }
+        }
+
+        @media (max-width: 600px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-large, .bento-wide { grid-column: span 1; }
+            .iphone-body { width: 280px; height: 580px; }
+            .title-large { font-size: 40px; }
+            .nav-global ul { display: none; } /* 手機版隱藏頂部導覽列細節 */
+        }
+
+        /* =========================================
+           9. 頁尾
+           ========================================= */
+        footer {
+            border-top: 1px solid #333;
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 全域導覽列 -->
+    <nav class="nav-global">
+        <ul>
+            <li><a href="#"></a></li>
+            <li><a href="#">商店</a></li>
+            <li><a href="#">Mac</a></li>
+            <li><a href="#">iPad</a></li>
+            <li><a href="#">iPhone</a></li>
+            <li><a href="#">Watch</a></li>
+            <li><a href="#">AirPods</a></li>
+            <li><a href="#">支援服務</a></li>
+        </ul>
+    </nav>
+
+    <!-- 產品專屬導覽列 -->
+    <nav class="nav-local">
+        <a href="#" class="brand">iPhone 16 Pro</a>
+        <div class="actions">
+            <a href="#" class="hide-mobile">總覽</a>
+            <a href="#" class="hide-mobile">技術規格</a>
+            <a href="#" class="btn-buy">購買</a>
+        </div>
+    </nav>
+
+    <!-- 主視覺區塊 (Hero) -->
+    <section class="section" style="margin-top: 100px;">
+        <h1 class="title-large animate-fade-up">iPhone 16 Pro</h1>
+        <h2 class="subtitle title-gradient animate-fade-up delay-1">Hello, Apple Intelligence.</h2>
+        
+        <div class="cta-links animate-fade-up delay-2">
+            <a href="#" class="btn-primary">進一步了解</a>
+            <a href="#" class="link-arrow">購買</a>
+        </div>
+
+        <!-- 顏色選擇器 -->
+        <div class="color-picker animate-fade-up delay-2">
+            <div class="color-swatch swatch-desert" title="沙漠色鈦金屬"></div>
+            <div class="color-swatch swatch-natural" title="原色鈦金屬"></div>
+            <div class="color-swatch swatch-white" title="白色鈦金屬"></div>
+            <div class="color-swatch swatch-black" title="黑色鈦金屬"></div>
+        </div>
+
+        <!-- 精細 CSS 手機模型 -->
+        <div class="hero-mockup animate-fade-up delay-3">
+            <div class="iphone-body">
+                <div class="iphone-screen">
+                    <div class="dynamic-island"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 便當盒 (Bento Box) 特色介紹區 -->
+    <section class="bento-section">
+        <div class="bento-grid">
+            
+            <!-- 大方塊：相機系統 -->
+            <div class="bento-item bento-large">
+                <h3>相機控制功能</h3>
+                <p>指尖滑動，輕鬆調整曝光與景深。</p>
+                <div class="decor-camera">
+                    <div class="decor-lens"></div>
+                </div>
+            </div>
+
+            <!-- 寬方塊：晶片 -->
+            <div class="bento-item bento-wide" style="background-color: #1a1a1c;">
+                <h3>A18 Pro 晶片</h3>
+                <p>為 Apple Intelligence 打造的超級大腦。</p>
+                <div class="decor-chip">A18 Pro</div>
+            </div>
+
+            <!-- 小方塊 1：電池 -->
+            <div class="bento-item" style="justify-content: center; text-align: center;">
+                <h3 style="font-size: 40px; margin-bottom: 0;">飛躍提升的</h3>
+                <h3 style="font-size: 40px; color: var(--desert-titanium);">電池續航力</h3>
+            </div>
+
+            <!-- 小方塊 2：材質 -->
+            <div class="bento-item">
+                <h3>鈦金屬</h3>
+                <p>超堅固。超輕盈。</p>
+                <!-- 利用線性漸層模擬鈦金屬髮絲紋質感 -->
+                <div style="position:absolute; bottom:0; left:0; width:100%; height:120px; background: linear-gradient(90deg, #333 0%, #666 50%, #333 100%); opacity: 0.5;"></div>
+            </div>
+
+            <!-- 寬方塊：動態島 -->
+            <div class="bento-item bento-wide" style="align-items: center; justify-content: center; background: radial-gradient(circle, #222 0%, #111 100%);">
+                <div style="width: 180px; height: 50px; background: #000; border-radius: 25px; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+                    <div style="width:20px; height:20px; border-radius:50%; background:#ff3b30;"></div>
+                    <div style="width:80px; height:8px; border-radius:4px; background:#333;"></div>
+                </div>
+                <p style="margin-top: 20px;">動態島，隨時隨地掌握動態。</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+        <p>Copyright © 2026 Apple Inc. 保留一切權利。</p>
+        <p style="margin-top: 8px;">此為純 HTML 與 CSS 實作之精細排版練習，無使用任何外部圖片與框架。</p>
+    </footer>
+
+</body>
+</html>
